@@ -20,11 +20,22 @@ public class ClientServiceImpl implements ClientService {
             MessageInputService messageInputService =
                     new MessageInputServiceImpl(System.in);
 
-            System.out.println("Введите сообщение");
-            String consoleMessage = messageInputService.getMessage();
+            System.out.println("Введите свой логин");
+            String login = messageInputService.getMessage();
 
-            serverWriter.println(consoleMessage);
+            System.out.println("Введите свой пароль");
+            String password = messageInputService.getMessage();
+
+            serverWriter.println("!autho!" + login + ":" + password);
             serverWriter.flush();
+
+            while (true) {
+                String consoleMessage = messageInputService.getMessage();
+                if (!consoleMessage.equals("Exit")) {
+                    serverWriter.println(consoleMessage);
+                    serverWriter.flush();
+                } else System.exit(0);
+            }
         }
     }
 }
