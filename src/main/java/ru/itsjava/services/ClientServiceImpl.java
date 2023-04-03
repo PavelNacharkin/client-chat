@@ -20,29 +20,12 @@ public class ClientServiceImpl implements ClientService {
     public void start() {
         Socket socket = new Socket(HOST, PORT);
         if (socket.isConnected()) {
-            new Thread(new SocketRunnable(socket)).start();
+            new Thread(new SocketRunnable(socket, this)).start();
             log.info("Client start");
             serverWriter = new PrintWriter(socket.getOutputStream());
             messageInputService = new MessageInputServiceImpl(System.in);
             scanner = new Scanner(System.in);
             authorizationOrRegistration();
-
-            while (true) {
-                String consoleMessage = messageInputService.getMessage();
-                if (!consoleMessage.equals("Exit")) {
-                    if (consoleMessage.isEmpty()) {
-                        System.out.println("Сообщение не должно быть пустым");
-                    } else {
-                        serverWriter.println(consoleMessage.trim());
-                        serverWriter.flush();
-                    }
-                } else {
-                    serverWriter.println("Client disconnected");
-                    serverWriter.flush();
-                    log.info("Client disconnected");
-                    System.exit(0);
-                }
-            }
         }
     }
 
@@ -67,6 +50,26 @@ public class ClientServiceImpl implements ClientService {
 
         serverWriter.println(prefix + login + ":" + password);
         serverWriter.flush();
+    }
+
+    public void putMessage() {
+        while (true) {
+            String consoleMessage = messageInputService.getMessage();
+            if (!consoleMessage.equals("Exit")) {
+                if (consoleMessage.isEmpty()) {
+                    System.out.println("Сообщение не должно быть пустым");
+                } else {
+                    serverWriter.println(consoleMessage.trim());
+                    serverWriter.flush();
+                }
+            } else {
+                serverWriter.println("Client disconnected");
+                serverWriter.flush();
+                log.info("Client disconnected");
+                System.exit(0);
+            }
+        }
+
     }
 }
 

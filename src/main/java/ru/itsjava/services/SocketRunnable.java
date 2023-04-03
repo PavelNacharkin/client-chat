@@ -11,6 +11,7 @@ import java.net.Socket;
 @RequiredArgsConstructor
 public class SocketRunnable implements Runnable {
     private final Socket socket;
+    private final ClientService clientService;
 
     @SneakyThrows
     @Override
@@ -18,7 +19,11 @@ public class SocketRunnable implements Runnable {
         MessageInputService serverReader =
                 new MessageInputServiceImpl(socket.getInputStream());
         while (true) {
-            System.out.println(serverReader.getMessage());
+            String inputFromServer = serverReader.getMessage();
+            System.out.println(inputFromServer);
+            if (inputFromServer.equals("Пользователь не найден") || inputFromServer.equals("Кажется такой пользователь уже есть, попробуйте авторизироваться")) {
+                clientService.authorizationOrRegistration();
+            } else clientService.putMessage();
         }
     }
 }
