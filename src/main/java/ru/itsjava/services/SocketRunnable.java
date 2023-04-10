@@ -16,8 +16,7 @@ public class SocketRunnable implements Runnable {
     @SneakyThrows
     @Override
     public void run() {
-        MessageInputService serverReader =
-                new MessageInputServiceImpl(socket.getInputStream());
+        MessageInputService serverReader = new MessageInputServiceImpl(socket.getInputStream());
         while (true) {
             String inputFromServer = serverReader.getMessage();
             System.out.println(inputFromServer);
